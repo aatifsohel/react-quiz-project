@@ -4,6 +4,7 @@ import MainComponent from "./MainComponent";
 import Loader from "./Loader";
 import Error from "./ErrorComponent";
 import StartScreen from "./StartScreen";
+import Question from "./Question";
 
 const initialState = {
   questions: [],
@@ -23,6 +24,12 @@ function reducerFn(state, action) {
       return {
         ...state,
         status: "error",
+      };
+
+    case "start":
+      return {
+        ...state,
+        status: "active",
       };
 
     default:
@@ -61,7 +68,10 @@ export default function App() {
       <MainComponent>
         {status === "loading" && <Loader />}
         {status === "error" && <Error />}
-        {status === "ready" && <StartScreen numQuestions={numQuestions} />}
+        {status === "ready" && (
+          <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
+        )}
+        {status === "active" && <Question />}
       </MainComponent>
     </div>
   );

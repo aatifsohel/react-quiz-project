@@ -10,6 +10,8 @@ const initialState = {
   questions: [],
   // loading, error, ready, active, finished
   status: "loading",
+  // it's here bcoz we need to re-render after update index
+  index: 0,
 };
 
 function reducerFn(state, action) {
@@ -38,7 +40,10 @@ function reducerFn(state, action) {
 }
 
 export default function App() {
-  const [{ questions, status }, dispatch] = useReducer(reducerFn, initialState);
+  const [{ questions, status, index }, dispatch] = useReducer(
+    reducerFn,
+    initialState
+  );
 
   const numQuestions = questions.length;
 
@@ -71,7 +76,7 @@ export default function App() {
         {status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
-        {status === "active" && <Question />}
+        {status === "active" && <Question question={questions[index]} />}
       </MainComponent>
     </div>
   );

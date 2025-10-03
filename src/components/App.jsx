@@ -12,6 +12,8 @@ const initialState = {
   status: "loading",
   // it's here bcoz we need to re-render after update index
   index: 0,
+  // initial answer will be null
+  answer: null,
 };
 
 function reducerFn(state, action) {
@@ -33,6 +35,11 @@ function reducerFn(state, action) {
         ...state,
         status: "active",
       };
+    case "newAnswer":
+      return {
+        ...state,
+        answer: action.payload,
+      };
 
     default:
       throw new Error("Action unknown");
@@ -40,7 +47,7 @@ function reducerFn(state, action) {
 }
 
 export default function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(
+  const [{ questions, status, index, answer }, dispatch] = useReducer(
     reducerFn,
     initialState
   );
@@ -76,7 +83,13 @@ export default function App() {
         {status === "ready" && (
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
-        {status === "active" && <Question question={questions[index]} />}
+        {status === "active" && (
+          <Question
+            question={questions[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
+        )}
       </MainComponent>
     </div>
   );

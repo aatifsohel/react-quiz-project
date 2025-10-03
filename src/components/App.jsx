@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import Error from "./ErrorComponent";
 import StartScreen from "./StartScreen";
 import Question from "./Question";
+import NextButton from "./NextButton";
 
 const initialState = {
   questions: [],
@@ -25,6 +26,7 @@ function reducerFn(state, action) {
         questions: action.payload,
         status: "ready",
       };
+
     case "dataFailed":
       return {
         ...state,
@@ -36,6 +38,7 @@ function reducerFn(state, action) {
         ...state,
         status: "active",
       };
+
     case "newAnswer": {
       // current question based on index from questions arr
       // each question has diffeerent point & total points is in state
@@ -51,6 +54,9 @@ function reducerFn(state, action) {
             : state.totalPoints,
       };
     }
+
+    case "nextQuestion":
+      return { ...state, index: state.index + 1, answer: null };
 
     default:
       throw new Error("Action unknown");
@@ -95,11 +101,14 @@ export default function App() {
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
         {status === "active" && (
-          <Question
-            question={questions[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
+          <>
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
         )}
       </MainComponent>
     </div>

@@ -8,6 +8,10 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
+import Footer from "./Footer";
+import Timer from "./Timer";
+
+const SEC_PER_QUESTION = 30;
 
 const initialState = {
   questions: [],
@@ -19,6 +23,7 @@ const initialState = {
   answer: null,
   totalPoints: 0,
   highscore: 0,
+  secondsRemaining: null,
 };
 
 function reducerFn(state, action) {
@@ -40,6 +45,7 @@ function reducerFn(state, action) {
       return {
         ...state,
         status: "active",
+        secondsRemaining: state.questions.length * SEC_PER_QUESTION,
       };
 
     case "newAnswer": {
@@ -79,6 +85,13 @@ function reducerFn(state, action) {
         highscore: state.highscore,
       };
 
+    case "tick":
+      return {
+        ...state,
+        secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining === 0 ? "finished" : state.status,
+      };
+
     default:
       throw new Error("Action unknown");
   }
@@ -86,7 +99,15 @@ function reducerFn(state, action) {
 
 export default function App() {
   const [
-    { questions, status, index, answer, totalPoints, highscore },
+    {
+      questions,
+      status,
+      index,
+      answer,
+      totalPoints,
+      highscore,
+      secondsRemaining,
+    },
     dispatch,
   ] = useReducer(reducerFn, initialState);
 
@@ -139,12 +160,16 @@ export default function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton
-              dispatch={dispatch}
-              numQuestions={numQuestions}
-              index={index}
-              answer={answer}
-            />
+
+            <Footer>
+              <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
+              <NextButton
+                dispatch={dispatch}
+                numQuestions={numQuestions}
+                index={index}
+                answer={answer}
+              />
+            </Footer>
           </>
         )}
 

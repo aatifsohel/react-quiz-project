@@ -71,6 +71,14 @@ function reducerFn(state, action) {
             : state.highscore,
       };
 
+    case "restart":
+      return {
+        ...initialState,
+        questions: state.questions,
+        status: "ready",
+        highscore: state.highscore,
+      };
+
     default:
       throw new Error("Action unknown");
   }
@@ -145,6 +153,7 @@ export default function App() {
             totalPoints={totalPoints}
             maxPossiblePoints={maxPossiblePoints}
             highscore={highscore}
+            dispatch={dispatch}
           />
         )}
       </MainComponent>

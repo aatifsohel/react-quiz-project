@@ -14,6 +14,7 @@ const initialState = {
   index: 0,
   // initial answer will be null
   answer: null,
+  totalPoints: 0,
 };
 
 function reducerFn(state, action) {
@@ -35,11 +36,21 @@ function reducerFn(state, action) {
         ...state,
         status: "active",
       };
-    case "newAnswer":
+    case "newAnswer": {
+      // current question based on index from questions arr
+      // each question has diffeerent point & total points is in state
+      // we can also use this logic where we handle the event but that will be against the useReducer hook rule
+      const question = state.questions.at(state.index);
+
       return {
         ...state,
         answer: action.payload,
+        totalPoints:
+          action.payload === question.correctOption
+            ? state.totalPoints + question.points
+            : state.totalPoints,
       };
+    }
 
     default:
       throw new Error("Action unknown");
